@@ -1,0 +1,16 @@
+# 忽略 Python 編譯檔
+__pycache__/
+*.pyc
+
+# 忽略虛擬環境
+venv/
+.env
+
+# 忽略生成的資料庫 (因為每次都可以由 Excel 重建)
+*.db
+*.json
+
+# 忽略作業系統縮圖
+.DS_Store
+
+.claude
