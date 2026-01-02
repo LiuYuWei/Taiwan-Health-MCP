@@ -27,8 +27,8 @@
     ### 1. Clone 專案
 
     ```bash
-    git clone https://github.com/yourusername/Taiwan-ICD10-Health-MCP.git
-    cd Taiwan-ICD10-Health-MCP
+    git clone https://github.com/audi0417/Taiwan-Health-MCP.git
+    cd Taiwan-Health-MCP
     ```
 
     ### 2. 準備資料檔案
@@ -61,8 +61,8 @@
     ### 1. Clone 專案
 
     ```bash
-    git clone https://github.com/yourusername/Taiwan-ICD10-Health-MCP.git
-    cd Taiwan-ICD10-Health-MCP
+    git clone https://github.com/audi0417/Taiwan-Health-MCP.git
+    cd Taiwan-Health-MCP
     ```
 
     ### 2. 建立虛擬環境
@@ -338,7 +338,7 @@ docker-compose logs
 ## 🆘 需要幫助？
 
 - 📖 查看 [常見問題](faq/index.md)
-- 💬 開啟 [GitHub Issue](https://github.com/yourusername/Taiwan-ICD10-Health-MCP/issues)
+- 💬 開啟 [GitHub Issue](https://github.com/audi0417/Taiwan-Health-MCP/issues)
 - 📧 聯絡維護團隊
 
 ---

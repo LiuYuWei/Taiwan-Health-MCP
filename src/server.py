@@ -12,7 +12,7 @@ from lab_service import LabService
 from clinical_guideline_service import ClinicalGuidelineService
 
 # 1. Initialize the MCP Server
-mcp = FastMCP("Taiwan-Smart-Health-Agent")
+mcp = FastMCP("taiwanHealthMcp")
 
 # 2. Configure data paths
 # In Docker, we mount or copy data to /app/data

@@ -121,7 +121,7 @@ graph TB
 
 ```python
 # MCP Server 初始化
-mcp = FastMCP("Taiwan-Smart-Health-Agent")
+mcp = FastMCP("taiwanHealthMcp")
 
 # 工具註冊範例
 @mcp.tool()
