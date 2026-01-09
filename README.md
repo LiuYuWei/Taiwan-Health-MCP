@@ -7,6 +7,11 @@
 [![Python](https://img.shields.io/badge/Python-3.8+-green)](https://www.python.org/)
 [![MCP](https://img.shields.io/badge/MCP-1.0-orange)](https://modelcontextprotocol.io)
 [![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
+[![Docs](https://img.shields.io/badge/Docs-GitHub%20Pages-informational)](https://audi0417.github.io/Taiwan-Health-MCP)
+
+---
+
+📖 **[檢視完整文檔](https://audi0417.github.io/Taiwan-Health-MCP)** | [View Documentation](https://audi0417.github.io/Taiwan-Health-MCP)
 
 ---
 
