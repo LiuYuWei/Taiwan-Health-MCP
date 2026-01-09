@@ -11,10 +11,6 @@
 
 ---
 
-📖 **[檢視完整文檔](https://audi0417.github.io/Taiwan-Health-MCP)** | [View Documentation](https://audi0417.github.io/Taiwan-Health-MCP)
-
----
-
 ## ✨ 專案特色
 
 - 🇹🇼 **台灣在地化** - 專為台灣醫療環境設計，支援繁體中文
@@ -48,6 +44,11 @@ python src/server.py
 ```bash
 docker-compose up -d
 ```
+
+### 📖 完整文檔
+
+- **[GitHub Pages 文檔網站](https://audi0417.github.io/Taiwan-Health-MCP)** - 完整的架構、API、使用指南
+- **[本地 MkDocs](docs/)** - 離線開發文檔
 
 ---
 
@@ -143,8 +144,8 @@ docker-compose up -d
 
 ## 📚 詳細文件
 
-- **[src/README.md](src/README.md)** - 完整模組說明、API 參考、使用範例
-- **[docs/](docs/)** - MkDocs 文檔網站（架構、指南、API）
+- **[在線文檔網站](https://audi0417.github.io/Taiwan-Health-MCP)** ⭐ - MkDocs 完整文檔（架構、指南、API、FAQ）
+- **[src/README.md](src/README.md)** - 模組說明與開發參考
 
 ---
 
