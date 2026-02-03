@@ -6,9 +6,6 @@ services:
     container_name: taiwanHealthMcp
     ports:
       - "${MCP_PORT:-8000}:${MCP_PORT:-8000}"
-    volumes:
-      # Data directory is still mounted to persist ETL results and clinical data
-      - ./data:/app/data
     environment:
       - MCP_TRANSPORT=${MCP_TRANSPORT:-http}
       - MCP_HOST=${MCP_HOST:-0.0.0.0}

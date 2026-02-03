@@ -7,8 +7,9 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 3. 複製原始碼
+# 3. 複製原始碼與資料
 COPY src/ /app/src/
+COPY data/ /app/data/
 
 # 4. 【關鍵修改】切換工作目錄進入 /app/src
 WORKDIR /app/src
