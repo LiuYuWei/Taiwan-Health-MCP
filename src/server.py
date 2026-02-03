@@ -5,7 +5,12 @@ from mcp.server.fastmcp import FastMCP
 
 from config import MCPConfig
 from clinical_guideline_service import ClinicalGuidelineService
-# ... (rest of imports)
+from drug_service import DrugService
+from fhir_condition_service import FHIRConditionService
+from fhir_medication_service import FHIRMedicationService
+from food_nutrition_service import FoodNutritionService
+from health_food_service import HealthFoodService
+from icd_service import ICDService
 from lab_service import LabService
 from utils import log_error, log_info
 
@@ -17,6 +22,7 @@ mcp = FastMCP(
     "taiwanHealthMcp",
     host=config.host,
     port=config.port,
+    dependencies=["uvicorn"],
 )
 
 # 2. Configure data paths
@@ -109,6 +115,8 @@ def search_medical_codes(keyword: str, type: str = "all") -> str:
         type: Filter by 'diagnosis', 'procedure', or 'all'. Default is 'all'.
     """
     log_info(f"Tool called: search_medical_codes with query='{keyword}', type='{type}'")
+    if not icd_service:
+        return "Error: ICD Service is not initialized. Please check data files (Excel) and server logs."
     return icd_service.search_codes(keyword, type)
 
 
@@ -122,6 +130,8 @@ def infer_complications(code: str) -> str:
         code: The base diagnosis code (e.g., 'E11', 'N80').
     """
     log_info(f"Tool called: infer_complications with code='{code}'")
+    if not icd_service:
+        return "Error: ICD Service is not initialized."
     return icd_service.infer_complications(code)
 
 
@@ -135,6 +145,8 @@ def get_nearby_codes(code: str) -> str:
         code: The target diagnosis code.
     """
     log_info(f"Tool called: get_nearby_codes with code='{code}'")
+    if not icd_service:
+        return "Error: ICD Service is not initialized."
     return icd_service.get_nearby_codes(code)
 
 
@@ -164,6 +176,8 @@ def check_medical_conflict(diagnosis_code: str, procedure_code: str) -> str:
     log_info(
         f"Tool called: check_medical_conflict ({diagnosis_code} vs {procedure_code})"
     )
+    if not icd_service:
+        return "Error: ICD Service is not initialized."
     return icd_service.get_conflict_info(diagnosis_code, procedure_code)
 
 
@@ -182,6 +196,8 @@ def search_drug_info(keyword: str) -> str:
         keyword: Drug name or symptom (e.g., 'Panadol', '普拿疼', '頭痛').
     """
     log_info(f"Tool called: search_drug_info with query='{keyword}'")
+    if not drug_service:
+        return "Error: Drug Service is not initialized. Please check data files and server logs."
     return drug_service.search_drug(keyword)
 
 
@@ -195,6 +211,8 @@ def get_drug_details(license_id: str) -> str:
         license_id: The specific license ID found via search (e.g., '衛部藥製字第058498號').
     """
     log_info(f"Tool called: get_drug_details for ID='{license_id}'")
+    if not drug_service:
+        return "Error: Drug Service is not initialized."
     return drug_service.get_details(license_id)
 
 
@@ -208,6 +226,8 @@ def identify_unknown_pill(features: str) -> str:
                   Include shape, color, and markings if visible.
     """
     log_info(f"Tool called: identify_unknown_pill with features='{features}'")
+    if not drug_service:
+        return "Error: Drug Service is not initialized."
     return drug_service.identify_pill(features)
 
 
@@ -229,6 +249,9 @@ def analyze_treatment_plan(diagnosis_keyword: str, drug_keyword: str) -> str:
     log_info(
         f"Tool called: analyze_treatment with diagnosis='{diagnosis_keyword}', drug='{drug_keyword}'"
     )
+
+    if not icd_service or not drug_service:
+        return "Error: ICD or Drug Service is not initialized. Please check data files and server logs."
 
     # 1. Search ICD (broad search first)
     icd_result = icd_service.search_codes(diagnosis_keyword, type="diagnosis")
@@ -276,6 +299,8 @@ def search_health_food(keyword: str) -> str:
         keyword: Product name or health benefit (e.g., '靈芝', '調節血脂', '護肝').
     """
     log_info(f"Tool called: search_health_food with query='{keyword}'")
+    if not health_food_service:
+        return "Error: Health Food Service is not initialized. Please check data files and server logs."
     return health_food_service.search_health_food(keyword)
 
 
@@ -289,6 +314,8 @@ def get_health_food_details(license_number: str) -> str:
         license_number: The specific license number (e.g., '衛部健食字第A00123號').
     """
     log_info(f"Tool called: get_health_food_details for license='{license_number}'")
+    if not health_food_service:
+        return "Error: Health Food Service is not initialized."
     return health_food_service.get_health_food_details(license_number)
 
 
@@ -309,6 +336,8 @@ def search_food_nutrition(food_name: str, nutrient: str = None) -> str:
     log_info(
         f"Tool called: search_food_nutrition with food='{food_name}', nutrient='{nutrient}'"
     )
+    if not food_nutrition_service:
+        return "Error: Food Nutrition Service is not initialized."
     return food_nutrition_service.search_nutrition(food_name, nutrient)
 
 
@@ -322,6 +351,8 @@ def get_detailed_nutrition(food_name: str) -> str:
         food_name: The specific food name (e.g., '糙米', '雞胸肉').
     """
     log_info(f"Tool called: get_detailed_nutrition for food='{food_name}'")
+    if not food_nutrition_service:
+        return "Error: Food Nutrition Service is not initialized."
     return food_nutrition_service.get_detailed_nutrition(food_name)
 
 
@@ -335,6 +366,8 @@ def search_food_ingredient(keyword: str) -> str:
         keyword: Ingredient name in Chinese or English (e.g., '薑黃', 'turmeric', '人參').
     """
     log_info(f"Tool called: search_food_ingredient with query='{keyword}'")
+    if not food_nutrition_service:
+        return "Error: Food Nutrition Service is not initialized."
     return food_nutrition_service.search_food_ingredient(keyword)
 
 
@@ -347,6 +380,8 @@ def get_ingredients_by_category(category: str) -> str:
         category: Category name (e.g., '香料植物', '食品添加物', '著色劑').
     """
     log_info(f"Tool called: get_ingredients_by_category for category='{category}'")
+    if not food_nutrition_service:
+        return "Error: Food Nutrition Service is not initialized."
     return food_nutrition_service.get_ingredients_by_category(category)
 
 
@@ -359,6 +394,8 @@ def analyze_meal_nutrition(foods: list[str]) -> str:
         foods: List of food names to analyze together (e.g., ['白米', '雞胸肉', '青花菜']).
     """
     log_info(f"Tool called: analyze_meal_nutrition with foods={foods}")
+    if not food_nutrition_service:
+        return "Error: Food Nutrition Service is not initialized."
     return food_nutrition_service.analyze_diet_plan(foods)
 
 
@@ -414,6 +451,9 @@ def analyze_health_support_for_condition(diagnosis_keyword: str) -> str:
     log_info(
         f"Tool called: analyze_health_support_for_condition with diagnosis='{diagnosis_keyword}'"
     )
+
+    if not health_food_service:
+        return "Error: Health Food Service is not initialized."
 
     # 傳入 icd_service 和 food_nutrition_service 以整合疾病資訊和飲食建議
     return health_food_service.analyze_health_support_for_condition(
@@ -483,6 +523,9 @@ def create_fhir_condition(
         f"Tool called: create_fhir_condition for ICD={icd_code}, Patient={patient_id}"
     )
 
+    if not fhir_condition_service:
+        return "Error: FHIR Condition Service is not initialized."
+
     result = fhir_condition_service.create_condition(
         icd_code=icd_code,
         patient_id=patient_id,
@@ -533,6 +576,9 @@ def create_fhir_condition_from_diagnosis(
         f"Tool called: create_fhir_condition_from_diagnosis for '{diagnosis_keyword}'"
     )
 
+    if not fhir_condition_service:
+        return "Error: FHIR Condition Service is not initialized."
+
     result = fhir_condition_service.create_condition_from_search(
         keyword=diagnosis_keyword,
         patient_id=patient_id,
@@ -561,6 +607,9 @@ def validate_fhir_condition(condition_json: str) -> str:
         validate_fhir_condition('{"resourceType": "Condition", ...}')
     """
     log_info("Tool called: validate_fhir_condition")
+
+    if not fhir_condition_service:
+        return "Error: FHIR Condition Service is not initialized."
 
     import json
 
@@ -609,6 +658,8 @@ def search_loinc_code(keyword: str, category: str = None) -> str:
     log_info(
         f"Tool called: search_loinc_code with keyword='{keyword}', category='{category}'"
     )
+    if not lab_service:
+        return "Error: Lab Service is not initialized."
     return lab_service.search_loinc_code(keyword, category)
 
 
@@ -621,6 +672,8 @@ def list_lab_categories() -> str:
         所有可用的檢驗分類清單
     """
     log_info("Tool called: list_lab_categories")
+    if not lab_service:
+        return "Error: Lab Service is not initialized."
     return lab_service.list_categories()
 
 
@@ -650,6 +703,8 @@ def get_reference_range(loinc_code: str, age: int, gender: str = "all") -> str:
     log_info(
         f"Tool called: get_reference_range for LOINC={loinc_code}, age={age}, gender={gender}"
     )
+    if not lab_service:
+        return "Error: Lab Service is not initialized."
     return lab_service.get_reference_range(loinc_code, age, gender)
 
 
@@ -681,6 +736,8 @@ def interpret_lab_result(
           # 判讀 HbA1c 7.5%
     """
     log_info(f"Tool called: interpret_lab_result for LOINC={loinc_code}, value={value}")
+    if not lab_service:
+        return "Error: Lab Service is not initialized."
     return lab_service.interpret_lab_result(loinc_code, value, age, gender)
 
 
@@ -714,6 +771,8 @@ def batch_interpret_lab_results(
         )
     """
     log_info(f"Tool called: batch_interpret_lab_results for age={age}, gender={gender}")
+    if not lab_service:
+        return "Error: Lab Service is not initialized."
     import json
 
     try:
@@ -750,6 +809,8 @@ def search_clinical_guideline(keyword: str) -> str:
         - search_clinical_guideline("E11")
     """
     log_info(f"Tool called: search_clinical_guideline with keyword='{keyword}'")
+    if not guideline_service:
+        return "Error: Clinical Guideline Service is not initialized."
     return guideline_service.search_guideline(keyword)
 
 
@@ -775,6 +836,8 @@ def get_complete_guideline(icd_code: str) -> str:
         - get_complete_guideline("I10")  # 高血壓完整指引
     """
     log_info(f"Tool called: get_complete_guideline for ICD={icd_code}")
+    if not guideline_service:
+        return "Error: Clinical Guideline Service is not initialized."
     return guideline_service.get_complete_guideline(icd_code)
 
 
@@ -795,6 +858,8 @@ def get_medication_recommendations(icd_code: str) -> str:
         get_medication_recommendations("E11")  # 糖尿病用藥建議
     """
     log_info(f"Tool called: get_medication_recommendations for ICD={icd_code}")
+    if not guideline_service:
+        return "Error: Clinical Guideline Service is not initialized."
     return guideline_service.get_medication_recommendations(icd_code)
 
 
@@ -815,6 +880,8 @@ def get_test_recommendations(icd_code: str) -> str:
         get_test_recommendations("E11")  # 糖尿病檢查建議
     """
     log_info(f"Tool called: get_test_recommendations for ICD={icd_code}")
+    if not guideline_service:
+        return "Error: Clinical Guideline Service is not initialized."
     return guideline_service.get_test_recommendations(icd_code)
 
 
@@ -835,6 +902,8 @@ def get_treatment_goals(icd_code: str) -> str:
         get_treatment_goals("E11")  # 糖尿病治療目標（HbA1c <7% 等）
     """
     log_info(f"Tool called: get_treatment_goals for ICD={icd_code}")
+    if not guideline_service:
+        return "Error: Clinical Guideline Service is not initialized."
     return guideline_service.get_treatment_goals(icd_code)
 
 
@@ -862,6 +931,9 @@ def suggest_clinical_pathway(icd_code: str, patient_context_json: str = None) ->
         suggest_clinical_pathway("E11")  # 糖尿病臨床路徑
     """
     log_info(f"Tool called: suggest_clinical_pathway for ICD={icd_code}")
+
+    if not guideline_service:
+        return "Error: Clinical Guideline Service is not initialized."
 
     import json
 
@@ -913,6 +985,9 @@ def create_fhir_medication(
     """
     log_info(f"Tool called: create_fhir_medication for license_id={license_id}")
 
+    if not fhir_medication_service:
+        return "Error: FHIR Medication Service is not initialized."
+
     result = fhir_medication_service.create_medication(
         license_id=license_id,
         include_ingredients=include_ingredients,
@@ -954,6 +1029,9 @@ def create_fhir_medication_knowledge(license_id: str) -> str:
         f"Tool called: create_fhir_medication_knowledge for license_id={license_id}"
     )
 
+    if not fhir_medication_service:
+        return "Error: FHIR Medication Service is not initialized."
+
     result = fhir_medication_service.create_medication_knowledge(license_id)
 
     return fhir_medication_service.to_json_string(result, indent=2)
@@ -988,6 +1066,9 @@ def create_fhir_medication_from_name(
     log_info(
         f"Tool called: create_fhir_medication_from_name for drug_name='{drug_name}'"
     )
+
+    if not fhir_medication_service:
+        return "Error: FHIR Medication Service is not initialized."
 
     result = fhir_medication_service.create_medication_from_search(
         keyword=drug_name, resource_type=resource_type
@@ -1031,6 +1112,9 @@ def identify_pill_to_fhir(
         f"Tool called: identify_pill_to_fhir with shape={shape}, color={color}, marking={marking}"
     )
 
+    if not fhir_medication_service:
+        return "Error: FHIR Medication Service is not initialized."
+
     result = fhir_medication_service.create_medication_from_appearance(
         shape=shape, color=color, marking=marking
     )
@@ -1040,5 +1124,5 @@ def identify_pill_to_fhir(
 
 # --- Start Server ---
 if __name__ == "__main__":
-    log_info("Server is starting...")
-    mcp.run('sse')
+    log_info(f"Server is starting with config: {config}")
+    mcp.run(**config.get_run_kwargs())
