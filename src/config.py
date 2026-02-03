@@ -65,7 +65,9 @@ class MCPConfig:
         """
         if self.transport == "stdio":
             return {"transport": "stdio"}
-        else:  # http 或 sse
+        elif self.transport == "http":
+            return {"transport": "sse"}
+        else:
             return {"transport": self.transport}
 
     def __str__(self) -> str:
