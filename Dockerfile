@@ -7,12 +7,14 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 3. 【關鍵修改】切換工作目錄進入 /app/src
-# 注意：data/ 和 src/ 會在運行時透過 volume mount 掛載，不需要在構建時複製
+# 3. 複製原始碼
+COPY src/ /app/src/
+
+# 4. 【關鍵修改】切換工作目錄進入 /app/src
 WORKDIR /app/src
 
-# 6. 設定環境變數
+# 5. 設定環境變數
 ENV PYTHONUNBUFFERED=1
 
-# 7. 【關鍵修改】因為已經在 src 裡面了，指令直接執行 server.py 即可
+# 6. 執行伺服器
 ENTRYPOINT ["python", "server.py"]
